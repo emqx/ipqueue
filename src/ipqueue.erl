@@ -1,4 +1,4 @@
--module(pqueue).
+-module(ipqueue).
 
 -export([ in/3
         , out/1
@@ -23,7 +23,7 @@
 
 -spec new() -> t().
 new() ->
-  Tab = ets:new(pqueue_tab, [ordered_set]),
+  Tab = ets:new(ipqueue_tab, [ordered_set]),
   ets:insert(Tab, {?size, 0}),
   #priority_queue{tab = Tab}.
 
