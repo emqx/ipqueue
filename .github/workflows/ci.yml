@@ -1,0 +1,26 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+    run_test_case:
+
+        runs-on: ubuntu-latest
+
+        container:
+            image: erlang:22.1
+
+        steps:
+        - uses: actions/checkout@v1
+        # - name: Check versions
+        #   run: |
+        #     ./git-tag.sh dummy --dryrun
+        - name: Compile
+          run: |
+            make
+
+        - uses: actions/upload-artifact@v1
+          if: always()
+          with:
+            name: logs
+            path: _build/test/logs
