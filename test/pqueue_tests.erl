@@ -16,6 +16,25 @@ order_test() ->
               , to_list(Q)
               ).
 
+benchmark_test() ->
+  NItems = 100000,
+  NPrios = 10,
+  Items = lists:seq(1, NItems),
+  Data = [{Prio, I} || I <- Items, Prio <- lists:seq(1, NPrios)],
+  Q = pqueue:new(),
+  {TPush, _} =
+    timer:tc(
+      fun() ->
+          lists:foreach(fun({Prio, I}) -> pqueue:in(I, Prio, Q) end, Data)
+      end),
+  io:format(standard_error, "Push: ~p us~n", [TPush/(NItems * NPrios)]),
+  {TPop, _} =
+    timer:tc(
+      fun() ->
+          just_dump(Q)
+      end),
+  io:format(standard_error, "Pop: ~p us~n", [TPop/(NItems * NPrios)]).
+
 make_graphs_test() ->
   Q1 = pqueue:new(),
   [pqueue:in(Prio, Prio, Q1) || N <- lists:seq(1, 10000), Prio <- [1, 2, 3]],
@@ -48,6 +67,14 @@ to_list(Q) ->
   case pqueue:out(Q) of
     {value, V} ->
       [V|to_list(Q)];
+    empty ->
+      []
+  end.
+
+just_dump(Q) ->
+  case pqueue:out(Q) of
+    {value, V} ->
+      to_list(Q);
     empty ->
       []
   end.
