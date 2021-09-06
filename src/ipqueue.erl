@@ -2,6 +2,8 @@
 
 -export([ in/3
         , out/1
+        , len/1
+        , is_empty/1
         , new/0
         , close/1
         ]).
@@ -50,6 +52,14 @@ out(#priority_queue{tab = Tab}) ->
     _ ->
       empty
   end.
+
+-spec len(t()) -> non_neg_integer().
+len(#priority_queue{tab = Tab}) ->
+  ets:lookup_element(Tab, ?size, 2).
+
+-spec is_empty(t()) -> boolean().
+is_empty(Q) ->
+  len(Q) =:= 0.
 
 %% This function generates keys that go in sequence for each
 %% individual priority level, but interleave for different priority
